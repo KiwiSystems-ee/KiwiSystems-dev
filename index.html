@@ -2,952 +2,847 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KiwiSystems-EE · Next-Gen AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>KiwiNutrition · Smart Food Scanner</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* ----- RESET & BASE ----- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0a0f0c;
             color: #e8f0e6;
             min-height: 100vh;
-            overflow-x: hidden;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
-
-        .bg-glow {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            filter: blur(140px);
-            opacity: 0.25;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .glow-1 {
-            top: -200px;
-            right: -100px;
-            background: #6fbf4f;
-        }
-        .glow-2 {
-            bottom: -200px;
-            left: -100px;
-            background: #1f7a3a;
-        }
-
-        .wrapper {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
+        .app-container {
+            max-width: 500px;
+            width: 100%;
             margin: 0 auto;
-            padding: 2rem 2rem 4rem;
         }
 
-        .topbar {
+        /* ----- HEADER ----- */
+        .app-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.8rem 0 2rem;
-            border-bottom: 1px solid rgba(168, 208, 141, 0.15);
-            flex-wrap: wrap;
-            gap: 1rem;
+            padding: 0.8rem 0 1.5rem 0;
+            border-bottom: 1px solid rgba(168, 208, 141, 0.1);
+            margin-bottom: 1.5rem;
         }
-
-        .logo {
-            font-size: 1.9rem;
+        .app-header .logo {
+            font-size: 1.5rem;
             font-weight: 800;
-            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .logo i {
-            color: #a8d08d;
-            font-size: 2.2rem;
-        }
-        .logo span {
+        .app-header .logo i { color: #a8d08d; font-size: 1.8rem; }
+        .app-header .logo span {
             background: linear-gradient(135deg, #b8e69c, #7dbb6b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            font-weight: 600;
-            font-size: 0.95rem;
-            letter-spacing: 0.3px;
-        }
-        .nav-links a {
-            color: #b0c8aa;
-            text-decoration: none;
-            transition: 0.25s;
-            position: relative;
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: #a8d08d;
-            transition: 0.3s;
-        }
-        .nav-links a:hover {
-            color: #e6f5e0;
-        }
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .menu-btn {
-            background: rgba(168, 208, 141, 0.08);
-            border: 1px solid rgba(168, 208, 141, 0.2);
-            color: #e6f0e6;
-            font-size: 1.4rem;
-            padding: 0.5rem 1.2rem;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            backdrop-filter: blur(6px);
-        }
-        .menu-btn:hover {
-            background: rgba(168, 208, 141, 0.18);
-            border-color: #a8d08d;
-            transform: scale(1.02);
-        }
-
-        .hero {
-            padding: 4rem 0 3rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            background: rgba(168, 208, 141, 0.12);
-            border: 1px solid rgba(168, 208, 141, 0.2);
-            padding: 0.4rem 1.4rem;
-            border-radius: 60px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #b3dba0;
-            width: fit-content;
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(4px);
-        }
-        .hero-badge i {
-            margin-right: 8px;
-            color: #a8d08d;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.8rem, 8vw, 5.2rem);
-            font-weight: 900;
-            line-height: 1.05;
-            letter-spacing: -2px;
-            max-width: 900px;
-        }
-        .hero h1 .highlight {
-            background: linear-gradient(135deg, #b8e69c, #6fbf4f, #3d8f3a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p {
-            font-size: 1.2rem;
-            color: #b0c8aa;
-            max-width: 600px;
-            line-height: 1.7;
-            font-weight: 400;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-        .btn-primary {
-            background: #a8d08d;
-            color: #0a1a0e;
-            padding: 0.9rem 2.8rem;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1rem;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-        .btn-primary:hover {
-            background: #c6f0b0;
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(168, 208, 141, 0.25);
-        }
-        .btn-secondary {
-            background: transparent;
-            color: #e6f0e6;
-            padding: 0.9rem 2.8rem;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            border: 1px solid rgba(168, 208, 141, 0.3);
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-        .btn-secondary:hover {
-            border-color: #a8d08d;
-            background: rgba(168, 208, 141, 0.06);
-            transform: translateY(-3px);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0 4rem;
-        }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(168, 208, 141, 0.08);
-            padding: 1.8rem 1.5rem;
-            border-radius: 32px;
-            text-align: center;
-            transition: 0.4s;
-        }
-        .stat-card:hover {
-            border-color: rgba(168, 208, 141, 0.25);
-            transform: translateY(-6px);
-            background: rgba(255, 255, 255, 0.04);
-        }
-        .stat-card .num {
-            font-size: 2.8rem;
-            font-weight: 900;
-            color: #c6f0b0;
-        }
-        .stat-card .label {
-            font-size: 0.9rem;
-            color: #8aaa82;
-            margin-top: 4px;
-        }
-
-        .about-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            padding: 4rem 0;
-            border-top: 1px solid rgba(168, 208, 141, 0.08);
-            border-bottom: 1px solid rgba(168, 208, 141, 0.08);
-            margin: 2rem 0 4rem;
-            align-items: center;
-        }
-        .about-section h2 {
-            font-size: 2.6rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 1.2rem;
-        }
-        .about-section h2 i {
-            color: #a8d08d;
-            margin-right: 12px;
-        }
-        .about-section p {
-            color: #b8d0b0;
-            line-height: 1.8;
-            font-size: 1.05rem;
-            margin-bottom: 1.2rem;
-        }
-        .about-section .highlight-text {
-            color: #d8f0c8;
-            font-weight: 600;
-        }
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.2rem;
-        }
-        .about-item {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(168, 208, 141, 0.06);
-            padding: 1.2rem 1.5rem;
-            border-radius: 20px;
-            transition: 0.3s;
-        }
-        .about-item:hover {
-            border-color: rgba(168, 208, 141, 0.2);
-            background: rgba(255, 255, 255, 0.03);
-        }
-        .about-item i {
-            font-size: 1.8rem;
-            color: #a8d08d;
-            margin-bottom: 6px;
-        }
-        .about-item h4 {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 2px;
-        }
-        .about-item p {
-            font-size: 0.85rem;
-            color: #8aaa82;
-        }
-
-        .projects-section {
-            padding: 2rem 0 3rem;
-        }
-        .projects-section h2 {
-            font-size: 2.4rem;
-            font-weight: 800;
-            margin-bottom: 2.5rem;
-            letter-spacing: -0.5px;
-        }
-        .projects-section h2 i {
-            color: #a8d08d;
-            margin-right: 12px;
-        }
-
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 2rem;
-        }
-        .project-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(168, 208, 141, 0.08);
-            border-radius: 36px;
-            padding: 2rem 1.8rem;
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
-        }
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #6fbf4f, #a8d08d);
-            opacity: 0;
-            transition: 0.4s;
-        }
-        .project-card:hover::before {
-            opacity: 1;
-        }
-        .project-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(168, 208, 141, 0.25);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            background: rgba(255, 255, 255, 0.04);
-        }
-        .project-card .icon {
-            font-size: 2.6rem;
-            color: #b3e09c;
-            margin-bottom: 0.8rem;
-        }
-        .project-card h3 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            margin-bottom: 0.4rem;
-        }
-        .project-card p {
-            color: #b0c8aa;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-        .project-card .badge {
-            display: inline-block;
-            margin-top: 1rem;
-            background: rgba(168, 208, 141, 0.12);
-            padding: 0.2rem 1rem;
-            border-radius: 40px;
+        .app-header .version {
             font-size: 0.7rem;
-            font-weight: 700;
-            color: #b3dba0;
-            letter-spacing: 0.3px;
-        }
-        .project-card .link-out {
-            display: inline-block;
-            margin-top: 1.2rem;
-            color: #a8d08d;
-            font-weight: 600;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .project-card .link-out i {
-            transition: 0.3s;
-        }
-        .project-card .link-out:hover i {
-            transform: translateX(6px);
-        }
-        .project-card .link-out:hover {
-            color: #c6f0b0;
+            color: #5a7a52;
+            background: rgba(168, 208, 141, 0.08);
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            border: 1px solid rgba(168, 208, 141, 0.06);
         }
 
-        .cooking-cta {
-            display: flex;
-            justify-content: center;
-            margin: 4rem 0 2rem;
-        }
-        .cook-btn {
-            background: linear-gradient(135deg, #e67e22, #d35400);
-            border: none;
-            color: #fff;
-            font-size: 1.6rem;
-            font-weight: 800;
-            padding: 1.4rem 3.6rem;
-            border-radius: 100px;
-            cursor: pointer;
-            box-shadow: 0 0 50px rgba(230, 126, 34, 0.25);
-            transition: 0.4s;
-            display: inline-flex;
-            align-items: center;
-            gap: 20px;
-            letter-spacing: 0.5px;
-        }
-        .cook-btn:hover {
-            transform: scale(1.05) rotate(-1deg);
-            box-shadow: 0 0 80px rgba(230, 126, 34, 0.4);
-        }
-        .cook-btn i {
-            font-size: 2.2rem;
-            transition: 0.6s;
-        }
-        .cook-btn:hover i {
-            transform: rotate(360deg) scale(1.15);
-        }
-        .flyout-text {
-            display: inline-block;
-            animation: flyOut 1.4s ease-in-out infinite alternate;
-        }
-
-        /* Contact Section */
-        .contact-section {
-            padding: 3rem 0 2rem;
-            border-top: 1px solid rgba(168, 208, 141, 0.08);
-            margin-top: 2rem;
-        }
-        .contact-section h2 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-        }
-        .contact-section h2 i {
-            color: #a8d08d;
-            margin-right: 12px;
-        }
-        .contact-card {
+        /* ----- SCANNER ----- */
+        .scanner-section {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(168, 208, 141, 0.08);
             border-radius: 24px;
-            padding: 1.8rem 2.5rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 1.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
             transition: 0.3s;
         }
-        .contact-card:hover {
-            border-color: rgba(168, 208, 141, 0.2);
-            background: rgba(255, 255, 255, 0.03);
+        .scanner-section.active {
+            border-color: rgba(168, 208, 141, 0.25);
+            box-shadow: 0 0 40px rgba(168, 208, 141, 0.04);
         }
-        .contact-card i {
-            font-size: 2.2rem;
-            color: #a8d08d;
-        }
-        .contact-card a {
-            color: #d8f0c8;
-            text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-        .contact-card a:hover {
-            color: #c6f0b0;
-            text-decoration: underline;
-        }
-
-        .footer {
-            border-top: 1px solid rgba(168, 208, 141, 0.06);
-            padding: 2.5rem 0 1rem;
+        .scanner-header {
             display: flex;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            color: #6a8a62;
-            font-size: 0.9rem;
             align-items: center;
+            margin-bottom: 0.8rem;
         }
-        .footer a {
-            color: #8aaa82;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .footer a:hover {
+        .scanner-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
             color: #c6f0b0;
         }
-        .footer .socials {
-            display: flex;
-            gap: 1.8rem;
-            font-size: 1.3rem;
+        .scanner-header h2 i { margin-right: 8px; color: #a8d08d; }
+        .scanner-status {
+            font-size: 0.75rem;
+            color: #8aaa82;
+            background: rgba(168, 208, 141, 0.06);
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
         }
-        .footer .visit-counter {
+        #reader {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            min-height: 200px;
+            background: #0a0f0c;
+            display: none;
+        }
+        #reader video { border-radius: 16px; width: 100%; }
+        .scanner-controls {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+        .btn-primary { background: #a8d08d; color: #0a1a0e; }
+        .btn-primary:hover { background: #c6f0b0; transform: scale(1.01); }
+        .btn-secondary {
+            background: rgba(168, 208, 141, 0.08);
+            color: #e6f0e6;
+            border: 1px solid rgba(168, 208, 141, 0.15);
+        }
+        .btn-secondary:hover { background: rgba(168, 208, 141, 0.15); border-color: #a8d08d; }
+        .btn-danger { background: #8a2a2a; color: #ffd0d0; border: 1px solid rgba(200,50,50,0.3); }
+        .btn-danger:hover { background: #aa3a3a; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+        .search-fallback {
+            margin-top: 0.8rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .search-fallback input {
+            flex: 1;
+            padding: 0.7rem 1.2rem;
+            border-radius: 60px;
+            border: 1px solid rgba(168, 208, 141, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+            color: #e6f0e6;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        .search-fallback input:focus {
+            border-color: #a8d08d;
+            box-shadow: 0 0 20px rgba(168, 208, 141, 0.05);
+        }
+        .search-fallback input::placeholder { color: #5a7a52; }
+
+        /* ----- PRODUCT DISPLAY ----- */
+        .product-section { display: none; animation: fadeUp 0.5s ease forwards; }
+        .product-section.visible { display: block; }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .product-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(168, 208, 141, 0.08);
+            border-radius: 32px;
+            padding: 1.8rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .product-card .brand {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6a8a62;
+        }
+        .product-card .name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0.2rem 0 0.5rem;
+            color: #d8f0c8;
+        }
+        .product-card .sub-info { color: #8aaa82; font-size: 0.85rem; }
+
+        /* Score Ring */
+        .score-container {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        .score-ring {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #0a0f0c;
+            position: relative;
+        }
+        .score-ring .score-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #0a0f0c;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+        .score-ring .score-inner { text-align: center; }
+        .score-ring.green { background: #6fbf4f; box-shadow: 0 0 40px rgba(111,191,79,0.2); }
+        .score-ring.yellow { background: #e6b800; box-shadow: 0 0 40px rgba(230,184,0,0.2); }
+        .score-ring.orange { background: #e67e22; box-shadow: 0 0 40px rgba(230,126,34,0.2); }
+        .score-ring.red { background: #c0392b; box-shadow: 0 0 40px rgba(192,57,43,0.2); }
+
+        .score-breakdown {
+            flex: 1;
+            min-width: 150px;
+        }
+        .score-breakdown .break-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(168, 208, 141, 0.04);
+            font-size: 0.85rem;
+        }
+        .score-breakdown .break-item .label { color: #8aaa82; }
+        .score-breakdown .break-item .value { color: #d8f0c8; font-weight: 600; }
+
+        /* Nutrition Table */
+        .nutrition-table {
+            margin: 1rem 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(168, 208, 141, 0.04);
+        }
+        .nutrition-table .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid rgba(168, 208, 141, 0.03);
+            font-size: 0.85rem;
+        }
+        .nutrition-table .row:last-child { border-bottom: none; }
+        .nutrition-table .row .label { color: #8aaa82; }
+        .nutrition-table .row .value { color: #d8f0c8; font-weight: 500; }
+
+        /* Ingredients Dropdown */
+        .ingredients-section {
+            margin-top: 1.5rem;
+            border-top: 1px solid rgba(168, 208, 141, 0.08);
+            padding-top: 1.2rem;
+        }
+        .ingredients-toggle {
+            background: rgba(168, 208, 141, 0.04);
+            border: 1px solid rgba(168, 208, 141, 0.1);
+            border-radius: 40px;
+            padding: 0.6rem 1.2rem;
+            color: #b3dba0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(168, 208, 141, 0.06);
-            padding: 0.4rem 1.2rem;
-            border-radius: 40px;
-            border: 1px solid rgba(168, 208, 141, 0.08);
+            width: fit-content;
+        }
+        .ingredients-toggle:hover {
+            background: rgba(168, 208, 141, 0.08);
+            border-color: #a8d08d;
+        }
+        .ingredients-toggle i { transition: transform 0.3s; }
+        .ingredients-toggle.open i { transform: rotate(180deg); }
+
+        .ingredients-list {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 1px solid rgba(168, 208, 141, 0.04);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .ingredients-list.open { display: flex; flex-wrap: wrap; }
+        .ingredient-item {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(168, 208, 141, 0.04);
+        }
+        .ingredient-item.bad {
+            background: rgba(192, 57, 43, 0.15);
+            border-color: #c0392b;
+            color: #ff8a7a;
+        }
+        .ingredient-item.bad i {
+            color: #c0392b;
+            margin-right: 4px;
+        }
+        .ingredient-item.organic {
+            background: rgba(111, 191, 79, 0.12);
+            border-color: #6fbf4f;
+            color: #8fdf7f;
+        }
+        .ingredient-item.organic i {
+            color: #6fbf4f;
+            margin-right: 4px;
+        }
+        .ingredient-item.safe {
+            color: #b0c8aa;
+        }
+
+        /* Alternatives */
+        .alternatives-section {
+            margin-top: 1.5rem;
+        }
+        .alternatives-section h3 {
+            font-size: 1rem;
             font-weight: 600;
             color: #b3dba0;
+            margin-bottom: 0.8rem;
         }
-        .footer .visit-counter i {
-            color: #a8d08d;
+        .alternatives-section h3 i { margin-right: 8px; color: #a8d08d; }
+        .alt-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
         }
-        .footer .visit-counter .count {
-            font-size: 1.2rem;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(6px);
-            z-index: 999;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.4s;
-        }
-        .sidebar-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -340px;
-            width: 320px;
-            height: 100vh;
-            background: #111b14;
-            border-right: 2px solid rgba(168, 208, 141, 0.15);
-            padding: 2.5rem 2rem;
-            transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            z-index: 1000;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 2.5rem;
-        }
-        .sidebar.open {
-            left: 0;
-        }
-        .sidebar h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #c6f0b0;
-            border-bottom: 2px solid rgba(168, 208, 141, 0.15);
-            padding-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .sidebar ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-        .sidebar ul li {
+        .alt-item {
             background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(168, 208, 141, 0.06);
-            padding: 0.9rem 1.4rem;
-            border-radius: 18px;
+            border: 1px solid rgba(168, 208, 141, 0.04);
+            border-radius: 16px;
+            padding: 0.8rem 1rem;
+            text-align: center;
             transition: 0.3s;
+            cursor: default;
         }
-        .sidebar ul li:hover {
-            background: rgba(168, 208, 141, 0.06);
-            border-color: rgba(168, 208, 141, 0.2);
-            transform: translateX(6px);
+        .alt-item:hover {
+            background: rgba(168, 208, 141, 0.04);
+            border-color: rgba(168, 208, 141, 0.12);
         }
-        .sidebar ul a {
-            color: #e6f0e6;
-            text-decoration: none;
-            font-weight: 500;
+        .alt-item .alt-name { font-size: 0.8rem; font-weight: 600; color: #d8f0c8; }
+        .alt-item .alt-brand { font-size: 0.65rem; color: #6a8a62; }
+        .alt-item .alt-score { font-size: 1.2rem; font-weight: 800; margin-top: 4px; }
+        .alt-item .alt-score.green { color: #6fbf4f; }
+        .alt-item .alt-score.yellow { color: #e6b800; }
+        .alt-item .alt-score.orange { color: #e67e22; }
+        .alt-item .alt-score.red { color: #c0392b; }
+
+        /* Loading & Error */
+        .loading { display: none; text-align: center; padding: 2rem; color: #6a8a62; }
+        .loading.visible { display: block; }
+        .loading i { font-size: 2rem; animation: spin 1s linear infinite; color: #a8d08d; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .error-msg {
+            display: none;
+            background: rgba(192,57,43,0.1);
+            border: 1px solid rgba(192,57,43,0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            color: #ff8a7a;
+            margin: 1rem 0;
+        }
+        .error-msg.visible { display: block; }
+        .error-msg i { font-size: 2rem; margin-bottom: 0.5rem; display: block; color: #c0392b; }
+
+        /* Status Bar */
+        .status-bar {
             display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .sidebar ul a i {
-            color: #a8d08d;
-            width: 24px;
-        }
-        .sidebar .badge {
-            margin-left: auto;
-            background: rgba(168, 208, 141, 0.15);
-            color: #b3dba0;
-            padding: 0.15rem 0.8rem;
-            border-radius: 40px;
-            font-size: 0.65rem;
-            font-weight: 700;
-        }
-        .sidebar-footer {
-            margin-top: auto;
-            font-size: 0.8rem;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.7rem;
             color: #5a7a52;
-            border-top: 1px solid rgba(168, 208, 141, 0.06);
-            padding-top: 1.5rem;
+            border-top: 1px solid rgba(168, 208, 141, 0.04);
+            margin-top: 1rem;
         }
+        .status-bar .visits i { margin-right: 4px; }
 
-        @keyframes flyOut {
-            0% { transform: translateY(0) scale(1); opacity: 0.8; }
-            100% { transform: translateY(-8px) scale(1.05); opacity: 1; }
-        }
-
-        @media (max-width: 800px) {
-            .about-section {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            .about-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .nav-links {
-                display: none;
-            }
-            .wrapper {
-                padding: 1.2rem;
-            }
-            .hero h1 {
-                font-size: 2.6rem;
-            }
-            .footer {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-            .contact-card {
-                flex-direction: column;
-                text-align: center;
-                padding: 1.5rem;
-            }
-        }
+        /* Responsive */
         @media (max-width: 480px) {
-            .about-grid {
-                grid-template-columns: 1fr;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .hero-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-            .hero-actions .btn-primary,
-            .hero-actions .btn-secondary {
-                justify-content: center;
-                width: 100%;
-            }
-            .cook-btn {
-                font-size: 1.2rem;
-                padding: 1rem 2rem;
-                width: 100%;
-                justify-content: center;
-            }
-            .sidebar {
-                width: 280px;
-                left: -300px;
-            }
-            .footer .visit-counter {
-                width: 100%;
-                justify-content: center;
-            }
+            .score-container { flex-direction: column; align-items: center; text-align: center; }
+            .score-breakdown { width: 100%; }
+            .alt-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+            .app-header .logo { font-size: 1.2rem; }
+            .product-card .name { font-size: 1.3rem; }
+            .score-ring { width: 100px; height: 100px; font-size: 2.2rem; }
+            .btn { font-size: 0.8rem; padding: 0.6rem 1rem; }
         }
-
-        ::-webkit-scrollbar {
-            width: 4px;
+        @media (max-width: 380px) {
+            .alt-grid { grid-template-columns: 1fr; }
+            .scanner-controls { flex-direction: column; }
+            .search-fallback { flex-direction: column; }
         }
-        ::-webkit-scrollbar-track {
-            background: #0a0f0c;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3d7a55;
-            border-radius: 20px;
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0a0f0c; }
+        ::-webkit-scrollbar-thumb { background: #3d7a55; border-radius: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow glow-1"></div>
-    <div class="bg-glow glow-2"></div>
+<div class="app-container">
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="logo"><i class="fas fa-leaf"></i><span>KiwiNutrition</span></div>
+        <span class="version">v1.1 · Beta</span>
+    </header>
 
-    <aside class="sidebar" id="sidebar">
-        <h2><i class="fas fa-kiwi-bird"></i> KiwiSys</h2>
-        <ul>
-            <li><a href="#"><i class="fas fa-robot"></i> KiwiSystems-AI <span class="badge">v2</span></a></li>
-            <li><a href="https://www.kiwisystems.dedyn.io" target="_blank"><i class="fas fa-globe"></i> Main Site <span class="badge"><i class="fas fa-external-link-alt"></i></span></a></li>
-            <li><a href="https://kiwios-uk.github.io/Sprout-Connect/" target="_blank"><i class="fas fa-seedling"></i> Sprout Connect <span class="badge">Live</span></a></li>
-            <li><a href="#"><i class="fas fa-pizza-slice"></i> Cook Pizzas <span class="badge">soon</span></a></li>
-            <li><a href="#"><i class="fas fa-cloud-moon"></i> Nebula Core <span class="badge">alpha</span></a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <i class="fas fa-leaf"></i> KiwiSystems-EE &bull; 2026
+    <!-- SCANNER -->
+    <div class="scanner-section" id="scannerSection">
+        <div class="scanner-header">
+            <h2><i class="fas fa-camera"></i> Scan Product</h2>
+            <span class="scanner-status" id="scannerStatus">Ready</span>
         </div>
-    </aside>
-
-    <div class="wrapper">
-
-        <header class="topbar">
-            <div class="logo">
-                <i class="fas fa-kiwi-bird"></i>
-                <span>KiwiSystems-EE</span>
-            </div>
-            <div class="nav-links">
-                <a href="#about">About</a>
-                <a href="#projects">Projects</a>
-                <a href="#contact">Contact</a>
-            </div>
-            <button class="menu-btn" id="menuToggle">
-                <i class="fas fa-bars"></i> <span>Projects</span>
-            </button>
-        </header>
-
-        <section class="hero">
-            <div class="hero-badge">
-                <i class="fas fa-bolt"></i> Next-Gen AI Infrastructure
-            </div>
-            <h1>
-                Build <span class="highlight">tough</span>.<br />
-                Ship <span class="highlight">fast</span>.<br />
-                Own the future.
-            </h1>
-            <p>
-                KiwiSystems-EE delivers enterprise-grade AI tooling with zero
-                compromise — built for makers who demand performance.
-            </p>
-            <div class="hero-actions">
-                <a href="#projects" class="btn-primary">
-                    <i class="fas fa-rocket"></i> Explore Projects
-                </a>
-                <a href="#about" class="btn-secondary">
-                    <i class="fas fa-arrow-right"></i> About Us
-                </a>
-            </div>
-        </section>
-
-        <div class="stats-grid">
-            <div class="stat-card"><div class="num">99.9%</div><div class="label">Uptime</div></div>
-            <div class="stat-card"><div class="num">∞</div><div class="label">Scalability</div></div>
-            <div class="stat-card"><div class="num">5K</div><div class="label">AI req/sec</div></div>
-            <div class="stat-card"><div class="num">0</div><div class="label">Compromises</div></div>
+        <div id="reader"></div>
+        <div class="scanner-controls">
+            <button class="btn btn-primary" id="startScanBtn"><i class="fas fa-play"></i> Start Camera</button>
+            <button class="btn btn-danger" id="stopScanBtn" disabled><i class="fas fa-stop"></i> Stop</button>
         </div>
-
-        <section class="about-section" id="about">
-            <div>
-                <h2><i class="fas fa-leaf"></i> About KiwiSystems</h2>
-                <p>
-                    We're a crew of engineers, designers, and pizza enthusiasts
-                    building the <span class="highlight-text">next generation</span>
-                    of AI-powered tools. Born from the idea that tech should be
-                    <span class="highlight-text">powerful, intuitive, and unbreakable</span>.
-                </p>
-                <p>
-                    From autonomous AI agents to real-time data pipelines,
-                    KiwiSystems-EE is your launchpad for ambitious projects.
-                    No fluff. Just <span class="highlight-text">results</span>.
-                </p>
-                <div class="about-grid">
-                    <div class="about-item">
-                        <i class="fas fa-brain"></i>
-                        <h4>AI-First</h4>
-                        <p>Built for intelligent automation</p>
-                    </div>
-                    <div class="about-item">
-                        <i class="fas fa-shield-alt"></i>
-                        <h4>Secure</h4>
-                        <p>Enterprise-grade by default</p>
-                    </div>
-                    <div class="about-item">
-                        <i class="fas fa-bolt"></i>
-                        <h4>Blazing</h4>
-                        <p>Optimized for speed at scale</p>
-                    </div>
-                    <div class="about-item">
-                        <i class="fas fa-pizza-slice"></i>
-                        <h4>Hungry</h4>
-                        <p>We cook pizzas &amp; code</p>
-                    </div>
-                </div>
-            </div>
-            <div style="background: rgba(168,208,141,0.03); border-radius: 40px; padding: 2.5rem; border: 1px solid rgba(168,208,141,0.06);">
-                <i class="fas fa-quote-right" style="font-size: 2.8rem; color: #3d7a55; opacity: 0.5; margin-bottom: 1rem; display: block;"></i>
-                <p style="font-size: 1.4rem; font-weight: 600; line-height: 1.5; color: #d8f0c8;">
-                    "We don't just build software.<br />We build the tools that build the future."
-                </p>
-                <p style="color: #6a8a62; margin-top: 1rem;">— KiwiSystems Team</p>
-            </div>
-        </section>
-
-        <section class="projects-section" id="projects">
-            <h2><i class="fas fa-folder-open"></i> Current Projects</h2>
-            <div class="project-grid">
-                <div class="project-card">
-                    <div class="icon"><i class="fas fa-robot"></i></div>
-                    <h3>KiwiSystems-AI</h3>
-                    <p>Intelligent agents, NLP pipelines, and autonomous decision-making.</p>
-                    <span class="badge">v2 · Production</span>
-                    <a href="https://www.kiwisystems.dedyn.io" target="_blank" class="link-out">
-                        Explore <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-                <div class="project-card">
-                    <div class="icon"><i class="fas fa-seedling"></i></div>
-                    <h3>Sprout Connect</h3>
-                    <p>A Mahjong-style connect game — garden theme, relaxing puzzle.</p>
-                    <span class="badge">🌱 Live</span>
-                    <a href="https://kiwios-uk.github.io/Sprout-Connect/" target="_blank" class="link-out">
-                        Play Now <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-                <div class="project-card">
-                    <div class="icon"><i class="fas fa-pizza-slice"></i></div>
-                    <h3>Cook Pizzas</h3>
-                    <p>Roblox game — automated pizza cooking adventure.</p>
-                    <span class="badge">🍕 Coming soon</span>
-                    <a href="#" class="link-out">
-                        Get cooking <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-                <div class="project-card">
-                    <div class="icon"><i class="fas fa-cloud-moon"></i></div>
-                    <h3>Nebula Core</h3>
-                    <p>Distributed compute fabric for massive AI workloads.</p>
-                    <span class="badge">Alpha</span>
-                    <a href="#" class="link-out">
-                        Learn more <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section class="contact-section" id="contact">
-            <h2><i class="fas fa-envelope"></i> Contact</h2>
-            <div class="contact-card">
-                <i class="fas fa-leaf"></i>
-                <a href="mailto:supportkiwi@gmail.com">supportkiwi@gmail.com</a>
-            </div>
-        </section>
-
-        <div class="cooking-cta">
-            <button class="cook-btn" id="cookBtn">
-                <i class="fas fa-fire"></i>
-                <span class="flyout-text">Get Cooking</span>
-                <i class="fas fa-utensils"></i>
-            </button>
+        <div class="search-fallback">
+            <input type="text" id="searchInput" placeholder="Or type product name (e.g., 'Nutella')" />
+            <button class="btn btn-secondary" id="searchBtn" style="flex:0.5;"><i class="fas fa-search"></i></button>
         </div>
-
-        <footer class="footer">
-            <span><i class="fas fa-kiwi-bird" style="color:#5a7a52;"></i> KiwiSystems-EE &bull; 2026</span>
-            <div class="visit-counter">
-                <i class="fas fa-eye"></i>
-                <span>Visits:</span>
-                <span class="count" id="visitCount">—</span>
-            </div>
-            <div class="socials">
-                <a href="https://github.com/kiwios-uk" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-discord"></i></a>
-            </div>
-        </footer>
-
     </div>
 
-    <script>
-        (function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const menuBtn = document.getElementById('menuToggle');
-            const cookBtn = document.getElementById('cookBtn');
-            const visitSpan = document.getElementById('visitCount');
+    <!-- LOADING -->
+    <div class="loading" id="loadingIndicator"><i class="fas fa-spinner"></i><p style="margin-top:8px;">Looking up product...</p></div>
 
-            function toggleSidebar() {
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('active');
-                const icon = menuBtn.querySelector('i');
-                icon.className = sidebar.classList.contains('open') ? 'fas fa-times' : 'fas fa-bars';
-            }
+    <!-- ERROR -->
+    <div class="error-msg" id="errorMsg"><i class="fas fa-exclamation-triangle"></i><span id="errorText">Product not found.</span></div>
 
-            menuBtn.addEventListener('click', toggleSidebar);
-            overlay.addEventListener('click', toggleSidebar);
+    <!-- PRODUCT -->
+    <div class="product-section" id="productSection">
+        <div class="product-card">
+            <div class="brand" id="productBrand">—</div>
+            <div class="name" id="productName">Product Name</div>
+            <div class="sub-info" id="productSub">—</div>
 
-            cookBtn.addEventListener('click', function() {
-                const text = this.querySelector('.flyout-text');
-                text.style.animation = 'none';
-                void text.offsetHeight;
-                text.style.animation = 'flyOut 0.5s ease 3';
-                alert('🍕 GET COOKING! \nPizza automation incoming.\nStay hungry, Kiwi.');
-                setTimeout(() => {
-                    text.style.animation = 'flyOut 1.4s ease-in-out infinite alternate';
-                }, 2000);
-            });
+            <div class="score-container">
+                <div class="score-ring" id="scoreRing">
+                    <div class="score-inner"><span id="scoreNumber">0</span><div class="score-label">/100</div></div>
+                </div>
+                <div class="score-breakdown" id="scoreBreakdown">
+                    <div class="break-item"><span class="label">🍎 Nutrition</span><span class="value" id="scoreNutrition">—</span></div>
+                    <div class="break-item"><span class="label">🧪 Additives</span><span class="value" id="scoreAdditives">—</span></div>
+                    <div class="break-item"><span class="label">🌱 Organic</span><span class="value" id="scoreOrganic">—</span></div>
+                </div>
+            </div>
 
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        e.preventDefault();
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+            <h4 style="font-size:0.85rem; color:#8aaa82; margin-top:0.5rem; font-weight:500;">Nutrition per 100g</h4>
+            <div class="nutrition-table">
+                <div class="row"><span class="label">Calories</span><span class="value" id="nutriCalories">—</span></div>
+                <div class="row"><span class="label">Fat</span><span class="value" id="nutriFat">—</span></div>
+                <div class="row"><span class="label">Saturated Fat</span><span class="value" id="nutriSaturated">—</span></div>
+                <div class="row"><span class="label">Carbohydrates</span><span class="value" id="nutriCarbs">—</span></div>
+                <div class="row"><span class="label">Sugar</span><span class="value" id="nutriSugar">—</span></div>
+                <div class="row"><span class="label">Protein</span><span class="value" id="nutriProtein">—</span></div>
+                <div class="row"><span class="label">Salt</span><span class="value" id="nutriSalt">—</span></div>
+            </div>
+
+            <!-- INGREDIENTS DROPDOWN -->
+            <div class="ingredients-section">
+                <div class="ingredients-toggle" id="ingredientsToggle">
+                    <i class="fas fa-chevron-down"></i> <span>Show Ingredients</span>
+                </div>
+                <div class="ingredients-list" id="ingredientsList">
+                    <!-- dynamically filled -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Alternatives -->
+        <div class="alternatives-section">
+            <h3><i class="fas fa-arrow-right"></i> Better Alternatives</h3>
+            <div class="alt-grid" id="altGrid">
+                <div class="alt-item"><div class="alt-name">No alternatives found</div><div class="alt-brand">Try searching for similar products</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+        <span><i class="fas fa-kiwi-bird"></i> KiwiNutrition · Scan smarter</span>
+        <span class="visits"><i class="fas fa-eye"></i> <span id="visitCount">—</span></span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ---- DOM refs ----
+        const readerEl = document.getElementById('reader');
+        const startBtn = document.getElementById('startScanBtn');
+        const stopBtn = document.getElementById('stopScanBtn');
+        const statusEl = document.getElementById('scannerStatus');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        const productSection = document.getElementById('productSection');
+        const loadingEl = document.getElementById('loadingIndicator');
+        const errorMsg = document.getElementById('errorMsg');
+        const errorText = document.getElementById('errorText');
+
+        const productBrand = document.getElementById('productBrand');
+        const productName = document.getElementById('productName');
+        const productSub = document.getElementById('productSub');
+        const scoreNumber = document.getElementById('scoreNumber');
+        const scoreRing = document.getElementById('scoreRing');
+        const scoreNutrition = document.getElementById('scoreNutrition');
+        const scoreAdditives = document.getElementById('scoreAdditives');
+        const scoreOrganic = document.getElementById('scoreOrganic');
+        const nutriCalories = document.getElementById('nutriCalories');
+        const nutriFat = document.getElementById('nutriFat');
+        const nutriSaturated = document.getElementById('nutriSaturated');
+        const nutriCarbs = document.getElementById('nutriCarbs');
+        const nutriSugar = document.getElementById('nutriSugar');
+        const nutriProtein = document.getElementById('nutriProtein');
+        const nutriSalt = document.getElementById('nutriSalt');
+        const altGrid = document.getElementById('altGrid');
+        const ingredientsList = document.getElementById('ingredientsList');
+        const ingredientsToggle = document.getElementById('ingredientsToggle');
+
+        const visitSpan = document.getElementById('visitCount');
+
+        // ---- state ----
+        let html5QrCode = null;
+        let isScanning = false;
+        let currentProduct = null;
+
+        // ---- visit counter ----
+        async function updateVisitCounter() {
+            try {
+                const res = await fetch('https://api.countapi.xyz/hit/kiwinutrition-2026');
+                const data = await res.json();
+                if (data && data.value !== undefined) visitSpan.textContent = data.value.toLocaleString();
+            } catch (_) { visitSpan.textContent = '❤️'; }
+        }
+        updateVisitCounter();
+
+        // ---- helpers ----
+        function showLoading(show) { loadingEl.classList.toggle('visible', show); }
+        function showError(msg) {
+            errorText.textContent = msg || 'Something went wrong.';
+            errorMsg.classList.add('visible');
+            setTimeout(() => errorMsg.classList.remove('visible'), 5000);
+        }
+        function hideError() { errorMsg.classList.remove('visible'); }
+        function showProduct(show) {
+            productSection.classList.toggle('visible', show);
+            productSection.style.display = show ? 'block' : 'none';
+        }
+
+        // ---- scanner ----
+        function startScanner() {
+            if (isScanning) return;
+            const config = { fps: 20, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 };
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanError)
+                .then(() => {
+                    isScanning = true;
+                    readerEl.style.display = 'block';
+                    startBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    statusEl.textContent = 'Scanning...';
+                    document.getElementById('scannerSection').classList.add('active');
+                    hideError();
+                })
+                .catch(err => {
+                    console.warn('Scanner error:', err);
+                    statusEl.textContent = 'Camera unavailable';
+                    showError('Unable to access camera. Please allow permissions or use search.');
+                    readerEl.style.display = 'none';
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
                 });
+        }
+
+        function stopScanner() {
+            if (html5QrCode && isScanning) {
+                html5QrCode.stop().then(() => {
+                    isScanning = false;
+                    readerEl.style.display = 'none';
+                    startBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    statusEl.textContent = 'Stopped';
+                    document.getElementById('scannerSection').classList.remove('active');
+                }).catch(() => { /* force stop */ });
+            } else {
+                isScanning = false;
+                readerEl.style.display = 'none';
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                statusEl.textContent = 'Ready';
+            }
+        }
+
+        function onScanSuccess(decodedText) {
+            stopScanner();
+            statusEl.textContent = 'Barcode found!';
+            lookupProductByBarcode(decodedText);
+        }
+        function onScanError(err) { /* ignore */ }
+
+        // ---- API ----
+        async function lookupProductByBarcode(barcode) {
+            hideError();
+            showLoading(true);
+            showProduct(false);
+            try {
+                const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+                const data = await res.json();
+                if (data.status === 1 && data.product) {
+                    displayProduct(data.product);
+                } else {
+                    showError('Product not found in database. Try searching by name.');
+                }
+            } catch (err) {
+                showError('Network error. Please try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function searchProductByName(query) {
+            if (!query || query.trim().length < 2) {
+                showError('Please enter at least 2 characters.');
+                return;
+            }
+            hideError();
+            showLoading(true);
+            showProduct(false);
+            try {
+                const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=1`;
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.products && data.products.length > 0) {
+                    displayProduct(data.products[0]);
+                } else {
+                    showError('No products found.');
+                }
+            } catch (err) {
+                showError('Network error.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // ---- Yuka-style scoring (improved) ----
+        function calculateScore(nutriments, product) {
+            // 1. Nutrition (0-60) – based on Nutri-Score principles
+            let nutritionScore = 0;
+            const sugar = parseFloat(nutriments.sugars) || 0;
+            const salt = parseFloat(nutriments.salt) || 0;
+            const satFat = parseFloat(nutriments['saturated-fat']) || 0;
+            const protein = parseFloat(nutriments.proteins) || 0;
+            const fiber = parseFloat(nutriments.fiber) || 0;
+
+            // Negative points for sugar, salt, sat fat
+            let neg = 0;
+            if (sugar > 15) neg += 10;
+            else if (sugar > 10) neg += 6;
+            else if (sugar > 5) neg += 3;
+            if (salt > 1.0) neg += 8;
+            else if (salt > 0.6) neg += 5;
+            else if (salt > 0.3) neg += 2;
+            if (satFat > 5) neg += 8;
+            else if (satFat > 3) neg += 5;
+            else if (satFat > 1.5) neg += 2;
+
+            // Positive points for protein and fiber
+            let pos = 0;
+            if (protein > 10) pos += 6;
+            else if (protein > 5) pos += 3;
+            if (fiber > 5) pos += 6;
+            else if (fiber > 2) pos += 3;
+
+            nutritionScore = Math.max(0, 60 - neg + pos);
+            nutritionScore = Math.min(60, nutritionScore);
+
+            // 2. Additives (0-30)
+            const additives = product.additives_original_tags || [];
+            let additivesScore = 30;
+            // Known harmful additives (simplified list)
+            const badAdditives = ['e951', 'e952', 'e954', 'e955', 'e211', 'e202', 'e250', 'e251', 'e621', 'e620', 'e102', 'e110', 'e124', 'e129'];
+            let badCount = additives.filter(a => badAdditives.some(b => a.includes(b))).length;
+            let totalAdd = additives.length;
+            if (totalAdd > 8) additivesScore -= 15;
+            else if (totalAdd > 5) additivesScore -= 10;
+            else if (totalAdd > 3) additivesScore -= 5;
+            if (badCount > 3) additivesScore -= 10;
+            else if (badCount > 1) additivesScore -= 5;
+            additivesScore = Math.max(0, additivesScore);
+
+            // 3. Organic (0-10)
+            let organicScore = 0;
+            const labels = product.labels_tags || [];
+            if (labels.some(l => l.includes('organic') || l.includes('bio'))) organicScore = 10;
+            else if (labels.some(l => l.includes('fair_trade') || l.includes('fairtrade'))) organicScore = 5;
+
+            const total = Math.round(nutritionScore + additivesScore + organicScore);
+            return {
+                total: Math.min(100, Math.max(0, total)),
+                nutrition: Math.round(nutritionScore),
+                additives: Math.round(additivesScore),
+                organic: Math.round(organicScore)
+            };
+        }
+
+        function displayScore(score) {
+            const total = score.total;
+            scoreNumber.textContent = total;
+            let colorClass = 'green';
+            if (total >= 70) colorClass = 'green';
+            else if (total >= 50) colorClass = 'yellow';
+            else if (total >= 30) colorClass = 'orange';
+            else colorClass = 'red';
+            scoreRing.className = `score-ring ${colorClass}`;
+            scoreNutrition.textContent = `${score.nutrition}/60`;
+            scoreAdditives.textContent = `${score.additives}/30`;
+            scoreOrganic.textContent = `${score.organic}/10`;
+        }
+
+        // ---- display product ----
+        function displayProduct(product) {
+            currentProduct = product;
+            // Basic info
+            productBrand.textContent = product.brands || 'Unknown brand';
+            productName.textContent = product.product_name || product.generic_name || 'Product';
+            productSub.textContent = product.quantity || '';
+
+            // Nutrition
+            const nutriments = product.nutriments || {};
+            nutriCalories.textContent = nutriments['energy-kcal'] ? `${nutriments['energy-kcal']} kcal` : '—';
+            nutriFat.textContent = nutriments.fat ? `${nutriments.fat}g` : '—';
+            nutriSaturated.textContent = nutriments['saturated-fat'] ? `${nutriments['saturated-fat']}g` : '—';
+            nutriCarbs.textContent = nutriments.carbohydrates ? `${nutriments.carbohydrates}g` : '—';
+            nutriSugar.textContent = nutriments.sugars ? `${nutriments.sugars}g` : '—';
+            nutriProtein.textContent = nutriments.proteins ? `${nutriments.proteins}g` : '—';
+            nutriSalt.textContent = nutriments.salt ? `${nutriments.salt}g` : '—';
+
+            // Score
+            const score = calculateScore(nutriments, product);
+            displayScore(score);
+
+            // Ingredients
+            renderIngredients(product);
+
+            // Alternatives
+            showAlternatives(product);
+
+            showProduct(true);
+            productSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ---- ingredients with color coding ----
+        function renderIngredients(product) {
+            const ingredientsText = product.ingredients_text || product.ingredients || '';
+            if (!ingredientsText) {
+                ingredientsList.innerHTML = '<span style="color:#6a8a62;">No ingredient list available.</span>';
+                return;
+            }
+            // Split by commas (simple)
+            const items = ingredientsText.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            const badAdditives = ['e951', 'e952', 'e954', 'e955', 'e211', 'e202', 'e250', 'e251', 'e621', 'e620', 'e102', 'e110', 'e124', 'e129', 'aspartame', 'sucralose', 'acesulfame', 'saccharin', 'benzoate', 'nitrite', 'msg'];
+            const organicKeywords = ['organic', 'bio', 'fair trade', 'fairtrade'];
+
+            let html = '';
+            items.forEach(item => {
+                let cls = 'ingredient-item safe';
+                let icon = '';
+                const lower = item.toLowerCase();
+                // Check if organic
+                if (organicKeywords.some(k => lower.includes(k))) {
+                    cls = 'ingredient-item organic';
+                    icon = '<i class="fas fa-leaf"></i> ';
+                }
+                // Check if bad additive
+                else if (badAdditives.some(b => lower.includes(b))) {
+                    cls = 'ingredient-item bad';
+                    icon = '<i class="fas fa-exclamation-circle"></i> ';
+                }
+                html += `<span class="${cls}">${icon}${item}</span>`;
             });
+            ingredientsList.innerHTML = html;
+        }
 
-            const COUNTER_KEY = 'kiwisystems-ee-2026';
-
-            async function updateVisitCounter() {
-                try {
-                    const response = await fetch(`https://api.countapi.xyz/hit/${COUNTER_KEY}`);
-                    const data = await response.json();
-                    if (data && data.value !== undefined) {
-                        visitSpan.textContent = data.value.toLocaleString();
-                    } else {
-                        visitSpan.textContent = '?';
-                    }
-                } catch (error) {
-                    console.warn('Visit counter unavailable:', error);
-                    visitSpan.textContent = '❤️';
+        // ---- alternatives ----
+        function showAlternatives(product) {
+            const sugar = parseFloat((product.nutriments || {}).sugars) || 0;
+            const salt = parseFloat((product.nutriments || {}).salt) || 0;
+            const satFat = parseFloat((product.nutriments || {})['saturated-fat']) || 0;
+            let suggestions = [];
+            if (sugar > 10) suggestions.push({ name: 'Lower Sugar', detail: 'Choose <5g sugar/100g', diff: '+15' });
+            if (salt > 0.6) suggestions.push({ name: 'Reduced Salt', detail: 'Look for <0.3g salt/100g', diff: '+10' });
+            if (satFat > 3) suggestions.push({ name: 'Lower Saturated Fat', detail: 'Choose <1.5g sat fat/100g', diff: '+12' });
+            if (suggestions.length === 0) {
+                suggestions.push({ name: 'Great Choice!', detail: 'This product scores well', diff: '✅' });
+                suggestions.push({ name: 'Organic Alternative', detail: 'If available, choose organic', diff: '+5' });
+            } else {
+                const labels = product.labels_tags || [];
+                if (!labels.some(l => l.includes('organic') || l.includes('bio'))) {
+                    suggestions.push({ name: 'Organic Option', detail: 'Look for organic certification', diff: '+5' });
                 }
             }
+            suggestions = suggestions.slice(0, 2);
+            altGrid.innerHTML = suggestions.map(item => `
+                <div class="alt-item">
+                    <div class="alt-name">${item.name}</div>
+                    <div class="alt-brand">${item.detail}</div>
+                    <div class="alt-score green">${item.diff}</div>
+                </div>
+            `).join('');
+        }
 
-            updateVisitCounter();
+        // ---- toggle ingredients ----
+        ingredientsToggle.addEventListener('click', function() {
+            const list = document.getElementById('ingredientsList');
+            list.classList.toggle('open');
+            this.classList.toggle('open');
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        });
 
-        })();
-    </script>
-
+        // ---- event listeners ----
+        startBtn.addEventListener('click', startScanner);
+        stopBtn.addEventListener('click', stopScanner);
+        searchBtn.addEventListener('click', function() {
+            const query = searchInput.value.trim();
+            if (query) { stopScanner(); searchProductByName(query); }
+            else showError('Please enter a product name.');
+        });
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') searchBtn.click();
+        });
+        window.addEventListener('beforeunload', function() {
+            if (html5QrCode && isScanning) html5QrCode.stop().catch(() => {});
+        });
+    })();
+</script>
 </body>
 </html>
